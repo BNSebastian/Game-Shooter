@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Camera/CameraComponent.h"
+#include "Components/WidgetComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -9,9 +10,9 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "ShooterCharacter.h"
 #include "Sound/SoundCue.h"
-#include "Item.h"
-#include "Components/WidgetComponent.h"
 
+#include "Item.h"
+#include "Weapon.h"
 
 ///***********************************************************
 /* default class functions */
@@ -117,6 +118,9 @@ void AShooterCharacter::BeginPlay()
 		CameraDefaultFOV = GetFollowerCamera()->FieldOfView;
 		CameraCurrentFOV = CameraDefaultFOV;
 	}
+
+	// spawn the default weapon and attach it to the meshg
+	SpawnDefaultWeapon();
 }
 
 /// called every frame
@@ -434,6 +438,27 @@ bool AShooterCharacter::TraceUnderCrosshairs(FHitResult& OutHitResult, FVector& 
 	}
 
 	return false;
+}
+
+/// spawns default weapon
+void AShooterCharacter::SpawnDefaultWeapon()
+{
+	if (DefaultWeaponClass)
+	{
+		// spawn the weapon
+		AWeapon* DefaultWeapon = GetWorld()->SpawnActor<AWeapon>(DefaultWeaponClass);
+		// get the socket
+		const USkeletalMeshSocket* HandSocket = GetMesh()->GetSocketByName(FName("RightHandSocket"));
+		// check if socket exists
+		if (HandSocket)
+		{
+			// attach the weapon to the hand socket RightHandSocket
+			HandSocket->AttachActor(DefaultWeapon, GetMesh());
+		}
+
+		// set EquippedWeapon to the newly spawned weapon
+		EquippedWeapon = DefaultWeapon;
+	}
 }
 
 

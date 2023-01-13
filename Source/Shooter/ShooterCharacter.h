@@ -174,6 +174,9 @@ protected:
 	/// performs a line trace under the crosshair and checks if item is present
 	bool TraceUnderCrosshairs(FHitResult& OutHitResult, FVector& OutHitLocation);
 
+	/// spawn default weapon
+	void SpawnDefaultWeapon();
+
 private:
 	// randomized gunshot weapon sounds
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "True"))
@@ -194,6 +197,14 @@ private:
 	// smoke particle FX for the weapon trail
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat, meta = (AllowPrivateAccess = "True"))
 	UParticleSystem* BeamParticles;
+
+	// Currently equipped weapon
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "True"))
+	class AWeapon* EquippedWeapon;
+
+	// set the default weapon class in blueprint
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Combat, meta = (AllowPrivateAccess = "True"))
+	TSubclassOf<AWeapon> DefaultWeaponClass;
 
 ///***********************************************************
 /* HUD pick-up */
